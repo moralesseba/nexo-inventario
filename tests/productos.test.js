@@ -21,6 +21,18 @@ describe('API de productos (inventario NEXO)', () => {
     expect(res.body.data[0].sku).toBe('ARR-001');
   });
 
+  it('GET /api/productos/bajo-stock lista productos con stock bajo', async () => {
+    db.query.mockResolvedValueOnce({
+      rows: [{ id: 4, nombre: 'Detergente 1kg', sku: 'LIM-005', precio: 3290, stock: 8, categoria: 'Limpieza' }],
+    });
+    const res = await request(app).get('/api/productos/bajo-stock?umbral=10');
+    expect(res.status).toBe(200);
+    expect(res.body.umbral).toBe(10);
+    expect(res.body.total).toBe(1);
+    expect(res.body.data[0].sku).toBe('LIM-005');
+    expect(db.query).toHaveBeenCalledWith(expect.stringContaining('stock <= $1'), [10]);
+  });
+
   it('GET /api/productos/:id devuelve 404 si no existe', async () => {
     db.query.mockResolvedValueOnce({ rows: [] });
     const res = await request(app).get('/api/productos/999');

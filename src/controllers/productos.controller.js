@@ -44,6 +44,20 @@ async function listarProductos(req, res, next) {
   }
 }
 
+// Productos con stock menor o igual al umbral (apoya la reposición del almacén).
+async function productosBajoStock(req, res, next) {
+  try {
+    const umbral = parseInt(req.query.umbral, 10) || 10;
+    const { rows } = await db.query(
+      'SELECT id, nombre, sku, precio, stock, categoria FROM productos WHERE stock <= $1 ORDER BY stock ASC',
+      [umbral]
+    );
+    res.json({ data: rows, total: rows.length, umbral });
+  } catch (err) {
+    next(err);
+  }
+}
+
 async function obtenerProducto(req, res, next) {
   try {
     const { id } = req.params;
@@ -133,6 +147,7 @@ async function eliminarProducto(req, res, next) {
 
 module.exports = {
   listarProductos,
+  productosBajoStock,
   obtenerProducto,
   crearProducto,
   actualizarProducto,

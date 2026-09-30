@@ -1,6 +1,6 @@
 {
   "name": "nexo-inventario",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "NEXO — Módulo de gestión de inventario. API REST para el sistema de gestión del comercio ALMACÉN DOÑA PATY. Evaluación Sumativa Unidad 2 (DevOps / IaC en Cloud).",
   "main": "src/server.js",
   "scripts": {

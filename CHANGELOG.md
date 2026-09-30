@@ -6,11 +6,11 @@ El proyecto sigue [Versionado Semántico](https://semver.org/lang/es/).
 ## [1.1.0] - Segunda versión desplegada
 ### Agregado
 - Endpoint `GET /api/productos/bajo-stock?umbral=N` para listar productos
-  con stock bajo (apoya la reposición del almacén).
+  con stock bajo (apoya la reposición del almacén). Umbral por defecto: 10.
 - Prueba automatizada asociada al nuevo endpoint.
 
-> Ver `docs/v1.1-patch.md` para el detalle exacto del cambio. Esta versión
-> se etiqueta como `v1.1.0` y dispara un segundo despliegue (Entrega Continua).
+> Publicada con el tag `v1.1.0`, que dispara el segundo despliegue
+> (Entrega Continua). Detalle del cambio en `docs/v1.1-patch.md`.
 
 ## [1.0.0] - Primera versión desplegada
 ### Agregado
