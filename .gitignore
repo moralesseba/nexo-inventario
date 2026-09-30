@@ -1,0 +1,26 @@
+# Dependencias
+node_modules/
+
+# Variables de entorno y secretos (NUNCA versionar)
+.env
+.env.local
+*.pem
+*.key
+
+# Terraform: estado y credenciales
+infra/.terraform/
+infra/*.tfstate
+infra/*.tfstate.*
+infra/*.tfvars
+!infra/terraform.tfvars.example
+crash.log
+
+# Cobertura y logs
+coverage/
+*.log
+npm-debug.log*
+
+# Sistema operativo / editores
+.DS_Store
+.idea/
+.vscode/
