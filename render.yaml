@@ -1,0 +1,30 @@
+# Alternativa de Infraestructura como Código: Blueprint declarativo de Render.
+# Es un manifiesto versionado equivalente a la definición de Terraform.
+# Render lo lee automáticamente al conectar el repositorio (Blueprint).
+
+databases:
+  - name: nexo-inventario-db
+    databaseName: nexo_inventario
+    user: nexo
+    plan: free
+
+services:
+  - type: web
+    name: nexo-inventario
+    runtime: docker
+    dockerfilePath: ./Dockerfile
+    plan: free
+    region: oregon
+    branch: main
+    healthCheckPath: /health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: "3000"
+      # La cadena de conexión se toma del recurso de BD (secreto gestionado),
+      # nunca escrita en el código.
+      - key: DATABASE_URL
+        fromDatabase:
+          name: nexo-inventario-db
+          property: connectionString

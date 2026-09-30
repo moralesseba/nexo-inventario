@@ -1,0 +1,47 @@
+name: CD - Entrega Continua
+
+# La Entrega Continua se dispara al publicar una nueva versión (tag vX.Y.Z)
+# o manualmente. Publica la imagen y despliega en el proveedor Cloud (Render).
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+  workflow_dispatch:
+
+jobs:
+  publish-image:
+    name: Construir y publicar imagen en GHCR
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Iniciar sesión en GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          # El token lo entrega la plataforma: NUNCA se escribe en el código.
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Construir y publicar imagen
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository }}:latest
+            ghcr.io/${{ github.repository }}:${{ github.ref_name }}
+
+  deploy:
+    name: Desplegar en Render
+    needs: publish-image
+    runs-on: ubuntu-latest
+    steps:
+      - name: Disparar despliegue en Render (Deploy Hook)
+        # RENDER_DEPLOY_HOOK_URL es un secreto configurado en el repositorio.
+        run: curl -fsSL "$RENDER_DEPLOY_HOOK_URL"
+        env:
+          RENDER_DEPLOY_HOOK_URL: ${{ secrets.RENDER_DEPLOY_HOOK_URL }}

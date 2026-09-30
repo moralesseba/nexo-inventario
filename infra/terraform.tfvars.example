@@ -1,0 +1,9 @@
+# Copia este archivo como terraform.tfvars y completa tus valores.
+# terraform.tfvars está en .gitignore: NUNCA se sube al repositorio.
+
+render_api_key  = "rnd_xxxxxxxxxxxxxxxxxxxxxxxx"
+render_owner_id = "tea-xxxxxxxxxxxxxxxxxxxx"
+repo_url        = "https://github.com/moralesseba/nexo-inventario"
+branch          = "main"
+region          = "oregon"
+plan            = "free"
