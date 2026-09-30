@@ -1,0 +1,35 @@
+name: CI - Integración Continua
+
+# Disparadores: cada push y cada Pull Request hacia las ramas principales.
+on:
+  push:
+    branches: [main, develop]
+  pull_request:
+    branches: [main, develop]
+
+jobs:
+  build-test:
+    name: Lint, pruebas y build de imagen
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Obtener el código del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Análisis estático (lint)
+        run: npm run lint
+
+      - name: Ejecutar pruebas automatizadas
+        run: npm test
+
+      - name: Construir la imagen del contenedor
+        run: docker build -t nexo-inventario:${{ github.sha }} .
