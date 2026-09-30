@@ -3,6 +3,14 @@
 Todas las versiones relevantes del módulo de inventario de NEXO.
 El proyecto sigue [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.1.1] - Corrección de base de datos vacía en la nube
+### Corregido
+- `GET /api/productos` respondía 500 en Render porque la base de datos
+  gestionada parte vacía (`db/init.sql` solo lo ejecuta docker-compose).
+- Nueva migración idempotente (`src/initDb.js`) que se ejecuta al iniciar la
+  app: crea la tabla `productos` si no existe y carga los datos de ejemplo sin
+  duplicarlos (`CREATE TABLE IF NOT EXISTS` + `ON CONFLICT (sku) DO NOTHING`).
+
 ## [1.1.0] - Segunda versión desplegada
 ### Agregado
 - Endpoint `GET /api/productos/bajo-stock?umbral=N` para listar productos
