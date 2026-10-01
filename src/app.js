@@ -1,5 +1,6 @@
 'use strict';
 
+// Módulo principal de la aplicación Express. Define los endpoints y el middleware.
 const express = require('express');
 const config = require('./config');
 const productosRoutes = require('./routes/productos.routes');
