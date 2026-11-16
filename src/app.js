@@ -2,6 +2,7 @@
 
 // Módulo principal de la aplicación Express. Define los endpoints y el middleware.
 const express = require('express');
+const path = require('path');
 const config = require('./config');
 const productosRoutes = require('./routes/productos.routes');
 const { errorHandler, notFound } = require('./middleware/errorHandler');
@@ -30,11 +31,32 @@ app.get('/metrics', (req, res) => {
   res.send(metrics.prometheus());
 });
 
+// Métricas en JSON (las consume el dashboard de monitoreo).
+app.get('/metrics.json', (req, res) => {
+  res.json(
+    Object.assign(
+      { status: 'ok', service: 'nexo-inventario', version: config.version },
+      metrics.snapshot()
+    )
+  );
+});
+
+// Dashboard de monitoreo (página estática servida por la propia app).
+app.get('/dashboard', (req, res) => {
+  // CSP acotada para que el dashboard cargue sus estilos/scripts propios
+  // y consulte los endpoints del mismo origen.
+  res.setHeader(
+    'Content-Security-Policy',
+    "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' 'unsafe-inline'; connect-src 'self'"
+  );
+  res.sendFile(path.join(__dirname, 'dashboard.html'));
+});
+
 app.get('/', (req, res) => {
   res.json({
     servicio: 'NEXO — Módulo de gestión de inventario',
     version: config.version,
-    endpoints: ['/health', '/metrics', '/api/productos'],
+    endpoints: ['/health', '/metrics', '/metrics.json', '/dashboard', '/api/productos'],
   });
 });
 

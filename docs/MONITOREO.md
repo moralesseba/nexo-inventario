@@ -49,3 +49,17 @@ nexo_last_latency_ms 3
   errores 5xx o caídas.
 - **Trazabilidad de acciones** → el enunciado sugiere **CloudTrail**; aquí el
   log estructurado por solicitud deja trazabilidad de la actividad del servicio.
+
+## Dashboard de monitoreo
+
+La aplicación sirve un **dashboard** mínimo en `/dashboard` que visualiza los
+datos necesarios del servicio en tiempo real (se refresca cada 5 s), tomando los
+valores de `/metrics.json`:
+
+- Estado del servicio y versión.
+- Uptime.
+- Total de solicitudes y su desglose 2xx / 4xx / 5xx.
+- Latencia de la última solicitud.
+
+Es la vista de monitoreo equivalente a un panel de CloudWatch/Grafana, servida
+desde el mismo origen de la aplicación.
