@@ -130,6 +130,28 @@ git tag v1.0.0 && git push origin v1.0.0    # dispara el primer despliegue (CD)
 Luego habilita el acceso al repositorio para el docente (colaborador o repo
 público) y comparte la URL de la aplicación desplegada.
 
+## 8bis. Unidad 3 — Monitoreo, pruebas y seguridad DevSecOps
+
+La Unidad 3 extiende este proyecto con un sistema de gestión de la configuración
+que fortalece la operación, la trazabilidad y la seguridad del entorno desplegado:
+
+- **Monitoreo y logging (3.1):** logging estructurado JSON y endpoint `/metrics`
+  en formato Prometheus. Detalle en [`docs/MONITOREO.md`](docs/MONITOREO.md).
+- **Pruebas automatizadas (3.2):** 15 pruebas (Jest + supertest) ejecutadas en el
+  pipeline, incluidas las de métricas y encabezados de seguridad.
+- **Seguridad DevSecOps (3.3):** mínimo privilegio en la BD
+  ([`security/roles.sql`](security/roles.sql)), gestión de secretos, encabezados
+  de seguridad y un **job de escaneo** en el pipeline. Detalle en
+  [`docs/SEGURIDAD.md`](docs/SEGURIDAD.md).
+- **Informe de la unidad:** [`docs/INFORME.md`](docs/INFORME.md).
+
+Prueba rápida de los nuevos endpoints en local o en la nube:
+
+```bash
+curl http://localhost:3000/metrics     # métricas de monitoreo
+curl -i http://localhost:3000/health   # ver encabezados de seguridad
+```
+
 ## 9. Seguridad
 
 - No se versionan credenciales, tokens ni claves (`.env` y `*.tfvars` están en

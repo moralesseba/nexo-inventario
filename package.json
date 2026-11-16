@@ -1,7 +1,7 @@
 {
   "name": "nexo-inventario",
-  "version": "1.1.1",
-  "description": "NEXO — Módulo de gestión de inventario. API REST para el sistema de gestión del comercio ALMACÉN DOÑA PATY. Evaluación Sumativa Unidad 2 (DevOps / IaC en Cloud).",
+  "version": "1.2.0",
+  "description": "NEXO — Módulo de gestión de inventario. API REST para el sistema de gestión del comercio ALMACÉN DOÑA PATY. DevOps: IaC en Cloud (U2) + monitoreo, pruebas y seguridad DevSecOps (U3).",
   "main": "src/server.js",
   "scripts": {
     "start": "node src/server.js",
@@ -9,9 +9,10 @@
     "test": "jest --runInBand",
     "test:coverage": "jest --runInBand --coverage",
     "lint": "eslint .",
-    "lint:fix": "eslint . --fix"
+    "lint:fix": "eslint . --fix",
+    "audit": "npm audit --omit=dev --audit-level=high"
   },
-  "keywords": ["nexo", "inventario", "devops", "cicd", "docker", "iac"],
+  "keywords": ["nexo", "inventario", "devops", "cicd", "docker", "iac", "monitoreo", "logging", "devsecops"],
   "author": "Benjamín Nabarro — Sebastián Morales",
   "license": "MIT",
   "engines": {
