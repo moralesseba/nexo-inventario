@@ -3,6 +3,23 @@
 Todas las versiones relevantes del módulo de inventario de NEXO.
 El proyecto sigue [Versionado Semántico](https://semver.org/lang/es/).
 
+## [1.2.0] - Monitoreo, pruebas y seguridad DevSecOps (Unidad 3)
+### Agregado
+- **Logging estructurado** en formato JSON (`src/logger.js`) y middleware de
+  observabilidad que registra cada solicitud (`src/middleware/observability.js`).
+- **Endpoint `/metrics`** con métricas en formato Prometheus (total de
+  solicitudes, por estado, uptime, latencia) para monitoreo.
+- **Encabezados de seguridad** en todas las respuestas (`src/middleware/security.js`)
+  y ocultamiento de la tecnología del servidor.
+- **Rol de base de datos de mínimo privilegio** (`security/roles.sql`).
+- **Job de seguridad en el pipeline**: `npm audit` de dependencias de producción
+  y verificación de que no se versionen secretos.
+- Nuevas **pruebas automatizadas** de métricas y seguridad (total: 15 pruebas).
+### Seguridad
+- El escaneo detectó una vulnerabilidad *high* en una dependencia transitiva de
+  Express (`qs`); se corrigió con `npm audit fix` y el re-escaneo de producción
+  quedó en 0 vulnerabilidades.
+
 ## [1.1.1] - Corrección de base de datos vacía en la nube
 ### Corregido
 - `GET /api/productos` respondía 500 en Render porque la base de datos

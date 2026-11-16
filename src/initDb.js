@@ -1,5 +1,6 @@
 'use strict';
 const db = require('./db');
+const logger = require('./logger');
 
 const SCHEMA_SQL = `
 CREATE TABLE IF NOT EXISTS productos (
@@ -23,9 +24,9 @@ ON CONFLICT (sku) DO NOTHING;
 async function initDb() {
   try {
     await db.query(SCHEMA_SQL);
-    console.log('Base de datos inicializada: tabla "productos" lista.');
+    logger.info('db_initialized', { table: 'productos' });
   } catch (err) {
-    console.error('No se pudo inicializar la base de datos:', err.message);
+    logger.error('db_init_failed', { error: err.message });
   }
 }
 

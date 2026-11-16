@@ -33,3 +33,30 @@ jobs:
 
       - name: Construir la imagen del contenedor
         run: docker build -t nexo-inventario:${{ github.sha }} .
+
+  seguridad:
+    name: Seguridad DevSecOps (escaneo)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Obtener el código del repositorio
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Escaneo de vulnerabilidades en dependencias de producción (npm audit)
+        run: npm audit --omit=dev --audit-level=high
+
+      - name: Verificar que no se versionen secretos
+        run: |
+          if git ls-files | grep -E '(^|/)\.env$|\.tfvars$' | grep -v '\.example$'; then
+            echo "ERROR: hay archivos de secretos versionados"; exit 1;
+          fi
+          echo "OK: no hay archivos de secretos versionados"
