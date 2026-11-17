@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>NEXO — Monitoreo</title>
+  <style>
+    :root { --bg:#0f1115; --card:#1a1d24; --line:#2a2e37; --txt:#e8eaed; --muted:#9aa0aa; --ok:#39b36a; --warn:#e0a106; --err:#d14b4b; --accent:#4f8cff; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; background:var(--bg); color:var(--txt); padding:24px; }
+    header { display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; margin-bottom:20px; }
+    h1 { font-size:20px; margin:0; }
+    h1 small { color:var(--muted); font-weight:400; font-size:13px; display:block; }
+    .pill { padding:4px 12px; border-radius:999px; font-size:13px; font-weight:600; }
+    .pill.ok { background:rgba(57,179,106,.15); color:var(--ok); }
+    .pill.err { background:rgba(209,75,75,.15); color:var(--err); }
+    .grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr)); gap:14px; }
+    .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:16px; }
+    .card .label { color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.04em; }
+    .card .value { font-size:28px; font-weight:700; margin-top:6px; }
+    .value.ok { color:var(--ok); } .value.warn { color:var(--warn); } .value.err { color:var(--err); }
+    footer { margin-top:18px; color:var(--muted); font-size:12px; }
+    .dot { display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--accent); margin-right:6px; animation:p 1.6s infinite; }
+    @keyframes p { 0%,100%{opacity:1} 50%{opacity:.3} }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>NEXO — Monitoreo del servicio <small>Módulo de gestión de inventario</small></h1>
+    <span id="estado" class="pill ok">cargando…</span>
+  </header>
+
+  <div class="grid">
+    <div class="card"><div class="label">Versión</div><div class="value" id="version">—</div></div>
+    <div class="card"><div class="label">Uptime</div><div class="value" id="uptime">—</div></div>
+    <div class="card"><div class="label">Solicitudes totales</div><div class="value" id="total">—</div></div>
+    <div class="card"><div class="label">Respuestas 2xx</div><div class="value ok" id="r2xx">—</div></div>
+    <div class="card"><div class="label">Respuestas 4xx</div><div class="value warn" id="r4xx">—</div></div>
+    <div class="card"><div class="label">Respuestas 5xx</div><div class="value err" id="r5xx">—</div></div>
+    <div class="card"><div class="label">Última latencia</div><div class="value" id="lat">—</div></div>
+  </div>
+
+  <footer><span class="dot"></span>Actualizado: <span id="ts">—</span> · se refresca cada 5 s</footer>
+
+  <script>
+    function fmtUptime(s) {
+      s = Number(s) || 0;
+      const h = Math.floor(s/3600), m = Math.floor((s%3600)/60), sec = s%60;
+      return (h ? h+'h ' : '') + (m ? m+'m ' : '') + sec + 's';
+    }
+    async function refresh() {
+      try {
+        const r = await fetch('/metrics.json', { cache: 'no-store' });
+        const d = await r.json();
+        document.getElementById('version').textContent = 'v' + d.version;
+        document.getElementById('uptime').textContent = fmtUptime(d.uptime_seconds);
+        document.getElementById('total').textContent = d.requests_total;
+        document.getElementById('r2xx').textContent = d.requests_2xx;
+        document.getElementById('r4xx').textContent = d.requests_4xx;
+        document.getElementById('r5xx').textContent = d.requests_5xx;
+        document.getElementById('lat').textContent = d.last_latency_ms + ' ms';
+        const e = document.getElementById('estado');
+        if (d.requests_5xx > 0) { e.className = 'pill err'; e.textContent = 'con errores 5xx'; }
+        else { e.className = 'pill ok'; e.textContent = 'operativo'; }
+      } catch (err) {
+        const e = document.getElementById('estado');
+        e.className = 'pill err'; e.textContent = 'sin conexión';
+      }
+      document.getElementById('ts').textContent = new Date().toLocaleString();
+    }
+    refresh();
+    setInterval(refresh, 5000);
+  </script>
+</body>
+</html>
